@@ -1,0 +1,35 @@
+# Python 项目通用忽略规则
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+.env
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# 数据文件
+*.csv
+*.h5
+*.npy
+*.pkl
+*.pt
+*.bin
+
+# 日志和临时文件
+*.log
+*.tmp
+*.bak
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# IDE 文件
+.vscode/
+.idea/
+*.iml
