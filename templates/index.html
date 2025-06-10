@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实时视频流</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .video-container, .snapshot-item {
+            max-width: 800px;
+            width: 100%;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        #video-stream, .snapshot {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        .button {
+            background-color: #176be8;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .snapshots-container {
+            max-width: 800px;
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .snapshot-info {
+            color: #666;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>实时视频流</h1>
+    <div class="video-container">
+        <img id="video-stream" src="{{ url_for('video_feed') }}" alt="视频流">
+    </div>
+    <button class="button" onclick="takeSnapshot()">截取当前帧</button>
+    <div id="snapshots" class="snapshots-container">
+        <!-- 截图将会显示在这里 -->
+    </div>
+
+    <script>
+        function takeSnapshot() {
+            // 创建一个canvas元素
+            const canvas = document.createElement('canvas');
+            const video = document.getElementById('video-stream');
+            
+            // 设置canvas大小与视频流大小相同
+            canvas.width = video.naturalWidth || video.width;
+            canvas.height = video.naturalHeight || video.height;
+            
+            // 在canvas上绘制当前视频帧
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // 将canvas内容转换为图片
+            const imageData = canvas.toDataURL('image/jpeg');
+            
+            // 创建新的容器div
+            const container = document.createElement('div');
+            container.className = 'snapshot-item';
+            
+            // 创建新的图片元素
+            const img = document.createElement('img');
+            img.src = imageData;
+            img.className = 'snapshot';
+            
+            // 添加时间戳
+            const timestamp = new Date().toLocaleString();
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'snapshot-info';
+            timeDiv.textContent = `截图时间: ${timestamp}`;
+            
+            // 将图片和时间戳添加到容器中
+            container.appendChild(img);
+            container.appendChild(timeDiv);
+            
+            // 将容器添加到快照区域
+            const snapshotsContainer = document.getElementById('snapshots');
+            snapshotsContainer.insertBefore(container, snapshotsContainer.firstChild);
+        }
+    </script>
+</body>
+</html> 
